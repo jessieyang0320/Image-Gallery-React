@@ -1,5 +1,65 @@
 html, body {
-  
+  width: 100%;
+  height: 100%;
 
   background-color: #222;
 }
+
+.content {
+   width: 100%;
+   height: 100%;
+
+}
+
+
+/* stage starts*/
+
+.stage {
+	position: relative;
+	width: 100%;
+    height: 680px;
+}
+
+/* stage ends */
+
+
+/*image area starts*/
+
+.img-sec {
+	position: relative;
+	width: 100%;
+    height: 100%;
+    overflow: hidden; 
+    /*超出部分隐藏*/
+    background-color: #ddd;
+}
+/*image area ends*/
+
+/*controller -- start*/
+
+.controller-nav {
+	position: absolute;
+	left: 0;
+	bottom: 30px;
+	z-index: 101;
+	width: 100%;
+	text-align: center;
+}
+/*controller -- end*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
