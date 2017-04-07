@@ -26,11 +26,11 @@ class GalleryByReactApp extends React.Component {
 		return(
            <section className="stage" ref="stage">
                <section className="img-sec">
-                     {imgFigures}
+                    
                </section>
                
                <nav className="controller-nav">
-                     {controllerUnits}
+                   
                </nav>
            </section>
 
@@ -43,4 +43,4 @@ class GalleryByReactApp extends React.Component {
 GalleryByReactApp.defaultProps = {
 };
 
-export default AppComponent;
+export default GalleryByReactApp;
