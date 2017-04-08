@@ -1,11 +1,18 @@
+@mixin dis_whole {
+  width: 100%;
+  height: 100%;
+}
+
 html, body {
   width: 100%;
   height: 100%;
 
   background-color: #222;
+  @include dis_whole;
 }
 
 .content {
+   @include dis_whole;
    width: 100%;
    height: 100%;
 
@@ -17,7 +24,7 @@ html, body {
 .stage {
 	position: relative;
 	width: 100%;
-    height: 680px;
+    height: 750px;
 }
 
 /* stage ends */
@@ -32,6 +39,7 @@ html, body {
     overflow: hidden; 
     /*超出部分隐藏*/
     background-color: #ddd;
+    perspective: 1800px;
 /* @at-root directive, */ 
     @at-root {
 
@@ -44,8 +52,30 @@ html, body {
 			padding: 40px;
 			background-color: #fff;
 			box-sizing: border-box;
+			cursor: pointer;
+			transform-origin: 0 50% 0;
+			transform-style: preserve-3d;
+			transition: transform .6s ease-in-out, left .6s ease-in-out, top .6s ease-in-out;
+            &.is-inverse {
+            transform: translate(320px) rotateY(180deg);
+            }
+		}
 
-		    }
+	    .img-back {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            color: #666;
+            transform: rotateY(180deg) translateZ(1px);
+            backface-visibility:hidden;
+      
+            background: #fff;
+        }
 		    /*title of image*/
 	    figcaption {
 	    	text-align: center;

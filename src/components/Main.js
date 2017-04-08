@@ -28,10 +28,31 @@ function genImageURL(imageDataArr) {
 // get a random number within range
 var getRangeRandom = (low, high) => Math.floor(Math.random() * (high - low) + low);
 
+//获取0-30°之间一个任意正负值
+var get30DegRandom = () => {
+  let deg = '';
+  deg = (Math.random() > 0.5) ? '+' : '-';
+  return deg + Math.ceil(Math.random() * 30);
+};
 
-
-
+// image compent 
 class ImgFigure extends React.Component {
+  constructor(props){
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    }
+
+    //when click, image flips to the other side
+    handleClick(e){
+        if (this.props.arrange.isCenter) {
+          this.props.inverse()
+        } else {
+          this.props.center();
+        }
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
 	render (){
 
 		let styleObj = {};
@@ -39,11 +60,34 @@ class ImgFigure extends React.Component {
         if (this.props.arrange.pos) {
           styleObj = this.props.arrange.pos;
         } 
+//  if degree is less than 30, keep turning
+
+        if(this.props.arrange.rotate) {
+            let rotate = this.props.arrange.rotate;
+            (['MozTransform', 'msTransform', 'WebkitTransform', 'transform']).forEach((value) => {
+              styleObj[value] = 'rotate(' + rotate + 'deg)';
+            });
+        }
+
+        //set up z index of the centered image, so that it won`t be covered by others
+        if(this.props.arrange.isCenter) {
+            styleObj.zIndex = 11;
+        }
+
+        let imgFigureClassName = 'img-figure';
+        imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse ' : '';
+
+
 		return(
-			<figure className ="img-figure" style = {styleObj}> 
+			<figure className ={imgFigureClassName} style = {styleObj} onClick={this.handleClick}> 
 			  <img src= {this.props.data.imageURL} alt={this.props.data.title}/>
 			  <figcaption> 
 			    <h2 className = "img-title">{this.props.data.title}</h2>
+          <div className="img-back" onClick={this.handleClick}>
+              <p>
+                {this.props.data.desc}
+              </p>
+          </div>
 			  </figcaption>
 			</figure> 
 			)
@@ -82,13 +126,35 @@ class GalleryByReactApp extends React.Component {
                         left: 0,
                         top: 0
                     },
-                    rotate: 0,//旋转角度
-                    isInverse: false//图片正反面
-                    isCenter:false 图片是否居中
+                    rotate: 0,//rotate degree
+                    isInverse: false//back of image
+                    isCenter:false //if img centered
                 }*/
             ]
         }
 	}
+
+
+// flip image, index is the index of which is flipped
+inverse(index) {
+    return () => {
+      let imgsArrangArr = this.state.imgsArrangeArr;
+      imgsArrangArr[index].isInverse = !imgsArrangArr[index].isInverse;
+      this.setState({
+        imgsArrangeArr: imgsArrangArr
+      })
+    }
+  }
+
+/*利用rearrange函数
+   *居中对应index的图片
+   *
+   */
+  center(index) {
+    return () => {
+      this.rearrange(index);
+    }
+  }
 
 
 // rearrange image positions, params: centerIndex : select which 
@@ -112,7 +178,9 @@ class GalleryByReactApp extends React.Component {
                 //center centerIndex image , image in the center do not need any angel
                 // only one item in this array
                 imgsArrangeCenterArr[0] = {
-                    pos: centerPos
+                    pos: centerPos,
+                    rotate: 0,
+                    isCenter: true
 	             }
 
 	    //取出要布局上测的图片的状态信息(先随意选一张图片作为顶部图片，然后取出来)
@@ -128,8 +196,8 @@ class GalleryByReactApp extends React.Component {
               top: getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
               left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
             },
-            // rotate: get30DegRandom(),
-            // isCenter: false
+            rotate: get30DegRandom(),
+            isCenter: false
 
           };
         });
@@ -149,8 +217,8 @@ class GalleryByReactApp extends React.Component {
               top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
               left: getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
             },
-            // rotate: get30DegRandom(),
-            // isCenter: false
+            rotate: get30DegRandom(),
+            isCenter: false
           };
         }
         if (imgsArrangTopArr && imgsArrangTopArr[0]) {
@@ -165,18 +233,14 @@ class GalleryByReactApp extends React.Component {
 
 // after components mounted, calculate position range for each image
 	componentDidMount(){
-
 		// get stage DOM range
-		
-
-		let stageDOM = ReactDOM.findDOMNode(this.refs.stage),
+				let stageDOM = ReactDOM.findDOMNode(this.refs.stage),
 
 		    stageW = stageDOM.scrollWidth,
             stageH = stageDOM.scrollHeight,
 
             halfStageW = Math.ceil(stageW / 2),
             halfStageH = Math.ceil(stageH / 2);
-
 
         //get image range
         let imgFigureDOM = ReactDOM.findDOMNode(this.refs.imgFigures1),
@@ -186,7 +250,6 @@ class GalleryByReactApp extends React.Component {
           halfImgH = Math.ceil(imgH / 2);
 
         // calculate center position 
-
         this.Constant.centerPos = {
             left: halfStageW - halfImgW,
             top: halfStageH - halfImgH
@@ -212,10 +275,7 @@ class GalleryByReactApp extends React.Component {
         
 	}
 
-	
-
 // if no initial state, set it to 0,0
-
 	render() {
         let imgFigures = [];
         let controllerUnits = []
@@ -225,7 +285,10 @@ class GalleryByReactApp extends React.Component {
                     pos: {
                         left: 0,
                         top: 0
-                    }
+                    },
+                    rotate: 0,
+                    isInverse: false,
+                    isCenter: false
                     
                 }
             }
@@ -235,7 +298,8 @@ class GalleryByReactApp extends React.Component {
                     key={index} 
                     ref={'imgFigures'+index} 
                     arrange = {this.state.imgsArrangeArr[index]} 
-                     />
+                    inverse={this.inverse(index)}
+                    center={this.center(index)}/>
                 );
         });
 
