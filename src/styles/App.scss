@@ -1,5 +1,121 @@
+@mixin dis_whole {
+  width: 100%;
+  height: 100%;
+}
+
 html, body {
-  
+  width: 100%;
+  height: 100%;
 
   background-color: #222;
+  @include dis_whole;
 }
+
+.content {
+   @include dis_whole;
+   width: 100%;
+   height: 100%;
+
+}
+
+
+/* stage starts*/
+
+.stage {
+	position: relative;
+	width: 100%;
+    height: 750px;
+}
+
+/* stage ends */
+
+
+/*image area starts*/
+
+.img-sec {
+	position: relative;
+	width: 100%;
+    height: 100%;
+    overflow: hidden; 
+    /*超出部分隐藏*/
+    background-color: #ddd;
+    perspective: 1800px;
+/* @at-root directive, */ 
+    @at-root {
+
+		.img-figure {
+			position:absolute;
+
+			width: 320px;
+			height: 320px;
+			margin: 0;
+			padding: 40px;
+			background-color: #fff;
+			box-sizing: border-box;
+			cursor: pointer;
+			transform-origin: 0 50% 0;
+			transform-style: preserve-3d;
+			transition: transform .6s ease-in-out, left .6s ease-in-out, top .6s ease-in-out;
+            &.is-inverse {
+            transform: translate(320px) rotateY(180deg);
+            }
+		}
+
+	    .img-back {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            color: #666;
+            transform: rotateY(180deg) translateZ(1px);
+            backface-visibility:hidden;
+      
+            background: #fff;
+        }
+		    /*title of image*/
+	    figcaption {
+	    	text-align: center;
+	    	.img-title {
+	    		margin: 20px 0 0 0;
+	    		color: #a7a0a2;
+	    		font-size: 16px;
+	    	}
+	    }
+
+    }
+    
+}
+/*image area ends*/
+
+/*controller -- start*/
+
+.controller-nav {
+	position: absolute;
+	left: 0;
+	bottom: 30px;
+	z-index: 101;
+	width: 100%;
+	text-align: center;
+}
+/*controller -- end*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
