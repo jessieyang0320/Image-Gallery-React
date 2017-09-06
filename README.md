@@ -24,3 +24,4 @@ npm run dist
 
 write comments for instructions -- good habit, I wrote comments even in CSS file, just to tell which part is which
 
+npm run dist, cannot get images in demo, change img path to absolute path, cfg/default --> publicPath: './assets/' then npm run dist again
